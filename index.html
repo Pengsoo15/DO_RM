@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Survival OS | Master Your Money</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            text-align: left;
+            padding: 2rem;
+            border-radius: 0;
+            border: 1px solid var(--border-glass);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(139, 92, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.5rem;
+            border: 1px solid var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            margin: 6rem 0;
+            padding: 4rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+            border: 1px solid var(--primary);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span>SURVIVAL OS</span>
+            </a>
+
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="setup.html" class="nav-link">Setup</a></li>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="advice.html" class="nav-link">Weekly Plan</a></li>
+                <li><a href="tracker.html" class="nav-link">Tracker</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-badge">
+                [SYSTEM ACTIVE]
+            </div>
+            <h1>Don't just survive.<br><span>Thrive.</span></h1>
+            <p class="subtitle" style="margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">The definitive financial OS built for students. Stop
+                running out of money with smart allocation and real-time risk detection.</p>
+
+            <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="setup.html" class="btn btn-primary" style="width: auto; padding: 1rem 2.5rem; border-radius: 0;">
+                    INITIALIZE OS
+                </a>
+            </div>
+        </section>
+
+        <section id="features" class="features-grid">
+            <div class="card feature-card glass">
+                <div class="feature-icon">01</div>
+                <h3>Smart Allocation</h3>
+                <p>Automatically distributes your allowance across rent, food, and transport based on local Philippine
+                    cost models.</p>
+            </div>
+            <div class="card feature-card glass">
+                <div class="feature-icon">02</div>
+                <h3>Risk Detection</h3>
+                <p>Early warning system that alerts you when your fixed costs are too high or your daily limit is
+                    dangerously low.</p>
+            </div>
+            <div class="card feature-card glass">
+                <div class="feature-icon">03</div>
+                <h3>Weekly Plan</h3>
+                <p>Get a personalized weekly survival guide — daily food plans, transport strategies, and budget tips tailored to your status (Safe / Tight / Survival).</p>
+            </div>
+            <div class="card feature-card glass">
+                <div class="feature-icon">04</div>
+                <h3>Daily Tracker</h3>
+                <p>Log your daily spending and get real-time feedback on whether you're on track to make it to next
+                    month.</p>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2 style="font-size: 3rem; margin-bottom: 1rem; text-transform: uppercase;">Take Control.</h2>
+            <p class="subtitle" style="margin-bottom: 2.5rem;">Join thousands of independent students using Student
+                Survival OS to master their finances.</p>
+            <a href="setup.html" class="btn btn-primary" style="width: auto; padding: 1rem 3rem; border-radius: 0;">
+                LAUNCH SYSTEM
+            </a>
+        </section>
+
+        <footer
+            style="text-align: center; padding: 4rem 0; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border-glass); text-transform: uppercase; letter-spacing: 0.1em;">
+            <p>&copy; 2026 Student Survival OS. Built for independent students.</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

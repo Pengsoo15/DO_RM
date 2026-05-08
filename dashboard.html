@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Student Survival OS</title>
+    <meta name="description" content="Track your overall budget, remaining funds, and financial status in real-time.">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .metric-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 992px) { .metric-card { grid-column: span 6; } }
+        @media (max-width: 640px) { .metric-card { grid-column: span 12; } }
+
+        .metric-big {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin: 0.5rem 0;
+            line-height: 1;
+        }
+
+        .rating-SAFE { color: #10b981; }
+        .rating-TIGHT { color: #f59e0b; }
+        .rating-SURVIVAL { color: #ef4444; }
+
+        .rating-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 992px) { .rating-card { grid-column: span 6; } }
+        @media (max-width: 640px) { .rating-card { grid-column: span 12; } }
+
+        .rating-label-block {
+            padding: 0.5rem 1.25rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin: 0.5rem 0;
+        }
+
+        .rating-SAFE-block {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .rating-TIGHT-block {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .rating-SURVIVAL-block {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .remaining-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .remaining-bar-fill {
+            height: 100%;
+            transition: width 1s ease-in-out;
+        }
+
+        .advisor-card {
+            grid-column: span 12;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .advisor-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .advisor-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-main);
+        }
+
+        .breakdown-card {
+            grid-column: span 8;
+        }
+
+        @media (max-width: 768px) { .breakdown-card { grid-column: span 12; } }
+
+        .ai-card {
+            grid-column: span 4;
+        }
+
+        @media (max-width: 768px) { .ai-card { grid-column: span 12; } }
+
+        .example-display {
+            grid-column: span 12;
+            background: rgba(139, 92, 246, 0.04);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .example-metric {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            text-align: center;
+        }
+
+        .example-metric .val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .example-metric .lbl {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .advice-item {
+            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid;
+            background: rgba(255,255,255,0.02);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span>STUDENT SURVIVAL OS</span>
+            </a>
+
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="setup.html" class="nav-link">Setup</a></li>
+                <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+                <li><a href="advice.html" class="nav-link">Weekly Plan</a></li>
+                <li><a href="tracker.html" class="nav-link">Tracker</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Your <span>Financial</span> Health</h1>
+            <p class="subtitle">Real-time overview of your budget, funds, and survival status.</p>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <!-- Metric 1: Overall Budget -->
+            <div class="card metric-card">
+                <div class="stat-label">Overall Budget</div>
+                <div class="metric-big" id="overallBudget">₱0</div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Total available money this month</p>
+                <div class="remaining-bar-container">
+                    <div class="remaining-bar-fill" id="overallBar" style="width: 100%; background: var(--primary);"></div>
+                </div>
+            </div>
+
+            <!-- Metric 2: Remaining Budget -->
+            <div class="card metric-card">
+                <div class="stat-label">Remaining Budget</div>
+                <div class="metric-big" id="remainingBudget" style="color: var(--accent);">₱0</div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">After all recorded expenses</p>
+                <div class="remaining-bar-container">
+                    <div class="remaining-bar-fill" id="remainingBar" style="width: 100%; background: var(--accent);"></div>
+                </div>
+            </div>
+
+            <!-- Metric 3: Rating Score -->
+            <div class="card rating-card">
+                <div class="stat-label">Financial Status</div>
+                <div id="ratingBlock" class="rating-label-block rating-SAFE-block">SAFE</div>
+                <p id="ratingDescription" style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Budget is stable</p>
+            </div>
+
+            <!-- AI Financial Advisor Message -->
+            <div class="card glass advisor-card">
+                <div class="advisor-icon">💬</div>
+                <p id="advisorMessage" class="advisor-text">Analyzing your spending patterns...</p>
+            </div>
+
+            <!-- Expense Breakdown -->
+            <div class="card breakdown-card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">Expense Breakdown</h3>
+                <div class="item-list">
+                    <div class="item">
+                        <span class="item-name">Housing &amp; Rent</span>
+                        <span class="item-value" id="allocRent">₱0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">Food &amp; Essentials</span>
+                        <span class="item-value" id="allocFood">₱0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">Transportation</span>
+                        <span class="item-value" id="allocTransport">₱0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">Bills, School &amp; Subs</span>
+                        <span class="item-value" id="allocFixedOthers">₱0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">Extra (Snacks/Misc)</span>
+                        <span class="item-value" id="allocSnacks">₱0</span>
+                    </div>
+                    <div class="item" style="border-top: 1px solid var(--border-glass); margin-top: 0.25rem; padding-top: 1rem;">
+                        <span class="item-name" style="font-weight: 700;">Total Fixed Costs</span>
+                        <span class="item-value" id="totalFixed">₱0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Advisor Panel -->
+            <div class="card ai-card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">Financial Advisor</h3>
+                <div id="aiInsights">
+                    <p style="font-size: 0.9rem; color: var(--text-muted); padding: 0.5rem 0;">Analyzing your spending patterns...</p>
+                </div>
+            </div>
+
+            <!-- Today's Activity Summary -->
+            <div class="example-display card">
+                <div class="example-metric">
+                    <span class="val" id="dashDailyLimit">₱0</span>
+                    <span class="lbl">Daily Limit</span>
+                </div>
+                <div class="example-metric">
+                    <span class="val" id="dashSpentToday" style="color: var(--secondary);">₱0</span>
+                    <span class="lbl">Spent Today</span>
+                </div>
+                <div class="example-metric">
+                    <span class="val" id="dashRemainingToday" style="color: var(--accent);">₱0</span>
+                    <span class="lbl">Left Today</span>
+                </div>
+                <div class="example-metric">
+                    <span class="val" id="dashTomorrowLimit" style="color: var(--primary);">--</span>
+                    <span class="lbl">Tomorrow's Budget</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 3rem; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <button onclick="window.location.href='advice.html'" class="btn glass" style="background: rgba(255,255,255,0.05);">
+                View Weekly Plan
+            </button>
+            <button onclick="window.location.href='tracker.html'" class="btn btn-primary" style="width: auto;">
+                Log Expense
+            </button>
+            <button onclick="resetBudget()" class="btn" style="color: var(--danger); background: transparent;">
+                Reset
+            </button>
+        </div>
+    </div>
+
+    <script src="data/localCosts.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/budgetEngine.js"></script>
+    <script src="config.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

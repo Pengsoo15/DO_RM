@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup | Student Survival OS</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo"><span>SURVIVAL OS</span></a>
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="setup.html" class="nav-link active">Setup</a></li>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="advice.html" class="nav-link">Weekly Plan</a></li>
+                <li><a href="tracker.html" class="nav-link">Tracker</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>CONFIGURE OS</h1>
+            <p class="subtitle">Answer honestly for accurate results.</p>
+        </div>
+
+        <div class="stepper">
+            <div class="step-item active" id="stepIndicator1">
+                <div class="step-number">1</div>
+                <div class="step-label">You</div>
+            </div>
+            <div class="step-item" id="stepIndicator2">
+                <div class="step-number">2</div>
+                <div class="step-label">Housing</div>
+            </div>
+            <div class="step-item" id="stepIndicator3">
+                <div class="step-number">3</div>
+                <div class="step-label">Commute</div>
+            </div>
+            <div class="step-item" id="stepIndicator4">
+                <div class="step-number">4</div>
+                <div class="step-label">Habits</div>
+            </div>
+            <div class="step-item" id="stepIndicator5">
+                <div class="step-number">5</div>
+                <div class="step-label">Bills</div>
+            </div>
+        </div>
+
+        <form id="budgetForm" class="form-container multi-step-form">
+
+            <!-- STEP 1: Identity & Income -->
+            <div class="form-step active" id="step1">
+                <div class="form-section">
+                    <h2>ABOUT YOU</h2>
+
+                    <div class="form-group">
+                        <label for="schoolName">Where do you study?</label>
+                        <input type="text" id="schoolName" placeholder="e.g.CvSU, EAC, PCU, KLD" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="schoolArea">School area / city</label>
+                        <select id="schoolArea" required>
+                            <option value="">Select city in Cavite...</option>
+                            <option value="dasmarinas">Dasmariñas</option>
+                            <option value="trece">Trece Martires</option>
+                            <option value="silang">Silang</option>
+                            <option value="general_trias">General Trias</option>
+                            <option value="indang">Indang</option>
+                            <option value="imus">Imus</option>
+                            <option value="bacoor">Bacoor</option>
+                            <option value="carmona">Carmona</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allowance">How much is your allowance?</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="number" id="allowance" placeholder="Amount" style="flex: 2;" required>
+                            <select id="allowanceFrequency" style="flex: 1;" required>
+                                <option value="monthly">Monthly</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="daily">Daily</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Where does your allowance come from? (Add one or more)</label>
+                        <div id="allowanceList" class="item-list">
+                            <div class="allowance-item item">
+                                <div style="flex: 1; display: flex; gap: 0.5rem;">
+                                    <select class="allowance-source" required style="width: 100%">
+                                        <option value="">Source...</option>
+                                        <option value="parents">Parents / Family (Regular)</option>
+                                        <option value="parents_irregular">Parents / Family (Irregular / Delayed)</option>
+                                        <option value="scholarship">Scholarship / Stipend</option>
+                                        <option value="working">Working Student (Own income)</option>
+                                        <option value="mixed">Mixed (Family + Side income)</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn-small" onclick="removeAllowanceSource(this)">DEL</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addAllowanceSource()" style="margin-top: 1rem;">ADD SOURCE</button>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn btn-primary" onclick="nextStep(1)">NEXT</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Housing -->
+            <div class="form-step" id="step2">
+                <div class="form-section">
+                    <h2>HOUSING</h2>
+
+                    <div class="form-group">
+                        <label for="livingSetup">Living Setup</label>
+                        <select id="livingSetup" required>
+                            <option value="">Select setup...</option>
+                            <option value="solo">Solo Room / Studio</option>
+                            <option value="shared">Shared Room (2-4 people)</option>
+                            <option value="bedspace">Bedspace</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dormArea">Where is your dorm / boarding house?</label>
+                        <input type="text" id="dormArea" placeholder="e.g. Sampaloc, Sta. Mesa, Taguig">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rent">Monthly Rent (your share)</label>
+                        <input type="number" id="rent" placeholder="Your personal share" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Utilities included in rent?</label>
+                        <div style="display: flex; gap: 2rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="utilitiesIncluded" value="yes"> Yes
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="radio" name="utilitiesIncluded" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="utilitiesSection" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="wifiCost">WiFi (your share)</label>
+                            <input type="number" id="wifiCost" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="electricityCost">Electricity (your share)</label>
+                            <input type="number" id="electricityCost" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="waterCost">Water (your share)</label>
+                            <input type="number" id="waterCost" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn glass" onclick="prevStep(2)">PREV</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">NEXT</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Commute -->
+            <div class="form-step" id="step3">
+                <div class="form-section">
+                    <h2>COMMUTE</h2>
+
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between;">
+                            <label>Distance: Dorm to School</label>
+                            <span id="setupDistanceValue" class="text-primary">2 km</span>
+                        </div>
+                        <input type="range" id="setupDistance" min="0" max="30" step="1" value="2" class="slider" oninput="document.getElementById('setupDistanceValue').textContent = this.value + ' km'">
+                    </div>
+
+                    <div class="form-group">
+                        <label>How do you get to school? (Add all modes used)</label>
+                        <div id="transportList" class="item-list">
+                            <div class="transport-item item">
+                                <div style="flex: 1; display: flex; gap: 0.5rem;">
+                                    <select class="transport-type" required style="width: 60%">
+                                        <option value="">Type...</option>
+                                        <option value="walk">Walking</option>
+                                        <option value="jeepney">Jeepney</option>
+                                        <option value="tricycle">Tricycle</option>
+                                        <option value="bus">Bus</option>
+                                        <option value="uv_express">UV Express</option>
+                                        <option value="motorcycle">Gas (Own vehicle)</option>
+                                        <option value="ridehailing">Grab / Joyride</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <input type="number" class="transport-cost" placeholder="Fare" min="0" style="width: 35%">
+                                </div>
+                                <div class="trip-type" style="display: flex; gap: 0.5rem; font-size: 0.8rem;">
+                                    <label style="display: flex; align-items: center; gap: 2px;">
+                                        <input type="radio" name="tripType" value="oneway"> 1-way
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 2px;">
+                                        <input type="radio" name="tripType" value="twoway" checked> 2-way
+                                    </label>
+                                </div>
+                                <button type="button" class="btn-small" onclick="removeTransport(this)">DEL</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addTransport()" style="margin-top: 1rem;">
+                            ADD TRANSPORT
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="commuteFrequency">How many days/week do you go to campus?</label>
+                        <select id="commuteFrequency" required>
+                            <option value="3">3 days</option>
+                            <option value="4">4 days</option>
+                            <option value="5" selected>5 days</option>
+                            <option value="6">6 days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn glass" onclick="prevStep(3)">PREV</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(3)">NEXT</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: Habits -->
+            <div class="form-step" id="step4">
+                <div class="form-section">
+                    <h2>FOOD & HABITS</h2>
+
+                    <div class="form-group">
+                        <label for="mealsPerDay">How many meals do you eat per day?</label>
+                        <select id="mealsPerDay" required>
+                            <option value="1">1 meal</option>
+                            <option value="2">2 meals</option>
+                            <option value="3" selected>3 meals</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mealSource">Where do you usually eat?</label>
+                        <select id="mealSource" required>
+                            <option value="cook">I cook my own food</option>
+                            <option value="canteen" selected>School canteen / Carinderia</option>
+                            <option value="fastfood">Fast food (Jollibee, McDo)</option>
+                            <option value="mixed">Mix of everything</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="snackDailyFrequency">How often do you buy snacks/drinks?</label>
+                        <select id="snackDailyFrequency" required>
+                            <option value="0">Almost never</option>
+                            <option value="1" selected>1x a day</option>
+                            <option value="2">2x a day</option>
+                            <option value="3">3+ times a day</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="snackPriceRange">Typical snack spend per buy</label>
+                        <select id="snackPriceRange" required>
+                            <option value="15">Under ₱20 (Biscuit, street food)</option>
+                            <option value="35" selected>₱20–₱50 (Sari-sari, drinks)</option>
+                            <option value="75">₱50–₱100 (7-Eleven, milk tea)</option>
+                            <option value="150">₱100+ (Cafe, frappe)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coffeeHabit">Coffee / Milk Tea habit</label>
+                        <select id="coffeeHabit" required>
+                            <option value="none" selected>None / Rarely</option>
+                            <option value="weekly">About once a week</option>
+                            <option value="frequent">3-5 times a week</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leakageLevel">How often do you impulse-buy something "small lang naman"?</label>
+                        <select id="leakageLevel" required>
+                            <option value="0">Rarely — I stick to my plan</option>
+                            <option value="0.1" selected>Sometimes — maybe a few times a week</option>
+                            <option value="0.25">Often — almost every day</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn glass" onclick="prevStep(4)">PREV</button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep(4)">NEXT</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: School & Subscriptions -->
+            <div class="form-step" id="step5">
+                <div class="form-section">
+                    <h2>SCHOOL & SUBSCRIPTIONS</h2>
+
+                    <div class="form-group">
+                        <label for="schoolLoad">School Load</label>
+                        <select id="schoolLoad" required>
+                            <option value="light">Light — few subjects, minimal projects</option>
+                            <option value="medium" selected>Medium — regular load</option>
+                            <option value="heavy">Heavy — CS / Engineering / Thesis / Med</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monthly School Expenses (estimate is fine)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <input type="number" id="schoolOrgFees" placeholder="Org Fees">
+                            <input type="number" id="schoolBooks" placeholder="Books / Prints">
+                            <input type="number" id="schoolProjects" placeholder="Projects / Materials">
+                            <input type="number" id="schoolOther" placeholder="Others">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>DIGITAL SUBSCRIPTIONS</h2>
+                    <div class="form-group">
+                        <div id="subscriptionList" class="item-list">
+                            <div class="subscription-item item">
+                                <input type="text" class="sub-name" placeholder="Name (e.g. Canva, Netflix)" style="flex: 2;">
+                                <input type="number" class="sub-cost" placeholder="Monthly cost" style="flex: 1;">
+                                <button type="button" class="btn-small" onclick="removeSubscription(this)">DEL</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-small" onclick="addSubscription()" style="margin-top: 1rem;">
+                            ADD SUBSCRIPTION
+                        </button>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn glass" onclick="prevStep(5)">PREV</button>
+                    <button type="submit" class="btn btn-primary">INITIALIZE OS</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="data/localCosts.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/budgetEngine.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

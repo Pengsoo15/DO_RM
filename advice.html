@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Plan | Student Survival OS</title>
+    <meta name="description" content="Your personalized weekly survival plan — food, transport, and budget advice tailored to your student lifestyle.">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .advice-hero {
+            grid-column: span 12;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.15));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .status-badge {
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 0;
+        }
+
+        .status-SAFE {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-TIGHT {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-SURVIVAL {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .week-tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .week-tab {
+            padding: 0.5rem 1.25rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+        }
+
+        .week-tab.active {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .week-tab:hover:not(.active) {
+            border-color: rgba(255,255,255,0.2);
+            color: var(--text-main);
+        }
+
+        .day-plan {
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.03);
+            transition: var(--transition);
+        }
+
+        .day-header:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .day-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+        }
+
+        .day-toggle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .day-body {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .meal-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .meal-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            min-width: 80px;
+            padding-top: 2px;
+        }
+
+        .meal-desc {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .advice-pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+        }
+
+        .pill-food { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .pill-transport { background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2); }
+        .pill-money { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2); }
+        .pill-warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        .advice-block {
+            padding: 1rem 1.25rem;
+            border-left: 3px solid;
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        .advice-block.food { border-color: #10b981; }
+        .advice-block.transport { border-color: #06b6d4; }
+        .advice-block.money { border-color: #8b5cf6; }
+        .advice-block.behavior { border-color: #f59e0b; }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .metric-row {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .metric-item .val {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .metric-item .lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span>STUDENT SURVIVAL OS</span>
+            </a>
+
+            <div class="navbar-toggle" id="navbarToggle">
+                <span></span><span></span><span></span>
+            </div>
+
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="setup.html" class="nav-link">Setup</a></li>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="advice.html" class="nav-link active">Weekly Plan</a></li>
+                <li><a href="tracker.html" class="nav-link">Tracker</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Your <span>Survival</span> Plan</h1>
+            <p class="subtitle">A weekly guide tailored to your budget, habits, and situation.</p>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <!-- Hero: Status Summary -->
+            <div class="card advice-hero">
+                <div>
+                    <div class="stat-label">This Week's Overview</div>
+                    <div class="metric-row" style="margin-top: 0.75rem;">
+                        <div class="metric-item">
+                            <span class="val" id="heroOverall">₱0</span>
+                            <span class="lbl">Overall Budget</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="val" id="heroRemaining" style="color: var(--accent);">₱0</span>
+                            <span class="lbl">Remaining</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="val" id="heroDailyLimit" style="color: var(--primary);">₱0</span>
+                            <span class="lbl">Daily Limit</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="heroStatusBadge" class="status-badge status-SAFE">SAFE</div>
+            </div>
+
+            <!-- AI Opening Message -->
+            <div class="card glass" style="grid-column: span 12; padding: 1.25rem 2rem;">
+                <p id="advisorOpeningMsg" style="font-size: 1rem; line-height: 1.8; color: var(--text-main); margin: 0;"></p>
+            </div>
+
+            <!-- Weekly Food Plan -->
+            <div class="card" style="grid-column: span 8;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                    <div class="section-title" style="margin-bottom:0;">🍽️ Food Plan <span id="aiPlanBadge" style="display:none;font-size:0.7rem;padding:0.2rem 0.5rem;background:rgba(139,92,246,0.15);color:var(--primary);border:1px solid rgba(139,92,246,0.25);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-left:0.5rem;">AI Generated</span></div>
+                    <button id="regenBtn" onclick="regenerateAIPlan()" style="font-size:0.78rem;padding:0.35rem 0.85rem;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);color:var(--primary);cursor:pointer;font-weight:600;transition:all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.2)'" onmouseout="this.style.background='rgba(139,92,246,0.1)'">🔄 Regenerate</button>
+                </div>
+
+                <div class="week-tab-bar" id="weekTabBar">
+                    <button class="week-tab active" onclick="switchWeek(1)" id="weekTab1">Week 1</button>
+                    <button class="week-tab" onclick="switchWeek(2)" id="weekTab2">Week 2</button>
+                    <button class="week-tab" onclick="switchWeek(3)" id="weekTab3">Week 3</button>
+                    <button class="week-tab" onclick="switchWeek(4)" id="weekTab4">Week 4</button>
+                </div>
+
+                <div id="weekPlanContainer">
+                    <!-- Days will be injected here -->
+                </div>
+            </div>
+
+            <!-- Non-Food Advice Panel -->
+            <div class="card" style="grid-column: span 4;">
+                <div class="section-title" style="margin-bottom: 1.25rem;">💡 Smart Habits</div>
+                <div id="habitAdviceList">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Transport Advice -->
+            <div class="card" style="grid-column: span 6;">
+                <div class="section-title">🚌 Transportation Strategy</div>
+                <div id="transportAdviceList">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Budget Strategy -->
+            <div class="card" style="grid-column: span 6;">
+                <div class="section-title">💰 Budget Strategy</div>
+                <div id="budgetStrategyList">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 3rem; text-align: center; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <button onclick="window.location.href='tracker.html'" class="btn btn-primary" style="width: auto;">
+                Log Today's Spending
+            </button>
+            <button onclick="window.location.href='dashboard.html'" class="btn glass" style="background: rgba(255,255,255,0.05);">
+                View Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script src="data/localCosts.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/budgetEngine.js"></script>
+    <script src="config.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let currentWeek = 1;
+        let userData = null;
+        let allocation = null;
+        let ratingStatus = 'SAFE';
+        let dynamicData = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            userData = Storage.getUserData();
+            if (!userData) { window.location.href = 'setup.html'; return; }
+
+            allocation = BudgetEngine.calculateBudgetAllocation(userData);
+            const expenses = Storage.getExpenses();
+            dynamicData = BudgetEngine.calculateDynamicDailyBudget(userData, expenses);
+
+            const addedIncome = Storage.getTotalIncomeThisMonth();
+            const overallBudget = userData.monthlyAllowance + addedIncome;
+            const remainingBudget = Math.max(0, overallBudget - dynamicData.totalSpentThisMonth);
+            const ratio = overallBudget > 0 ? remainingBudget / overallBudget : 0;
+
+            if (ratio >= 0.5) ratingStatus = 'SAFE';
+            else if (ratio >= 0.20) ratingStatus = 'TIGHT';
+            else ratingStatus = 'SURVIVAL';
+
+            const actualDailyLimit = dynamicData.remainingSchoolDays > 0
+                ? Math.round(remainingBudget / dynamicData.remainingSchoolDays)
+                : dynamicData.baseDailyLimit;
+
+            document.getElementById('heroOverall').textContent = `₱${Math.round(overallBudget).toLocaleString()}`;
+            document.getElementById('heroRemaining').textContent = `₱${Math.round(remainingBudget).toLocaleString()}`;
+            document.getElementById('heroDailyLimit').textContent = `₱${actualDailyLimit.toLocaleString()}`;
+
+            const badge = document.getElementById('heroStatusBadge');
+            badge.textContent = ratingStatus;
+            badge.className = `status-badge status-${ratingStatus}`;
+
+            renderOpeningMessage(ratingStatus, dynamicData, allocation, actualDailyLimit, remainingBudget);
+            renderHabitAdvice();
+            renderTransportAdvice();
+            renderBudgetStrategy();
+
+            _actualDailyLimit = actualDailyLimit;
+            _remainingBudget = remainingBudget;
+
+            showFoodPlanLoading(true);
+            try {
+                const aiPlan = await AI.generateWeeklyFoodPlan(userData, actualDailyLimit, remainingBudget, ratingStatus);
+                if (aiPlan) {
+                    aiWeekPlan = aiPlan;
+                    renderAIWeekPlan(aiPlan);
+                } else {
+                    renderWeekPlan(1); // fallback to static
+                }
+            } catch(e) {
+                renderWeekPlan(1);
+            }
+            showFoodPlanLoading(false);
+        });
+
+        let aiWeekPlan = null;
+        let _actualDailyLimit = 0;
+        let _remainingBudget = 0;
+
+        function switchWeek(week) {
+            currentWeek = week;
+            document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`weekTab${week}`).classList.add('active');
+            if (aiWeekPlan) renderAIWeekPlan(aiWeekPlan);
+            else renderWeekPlan(week);
+        }
+
+        async function regenerateAIPlan() {
+            const btn = document.getElementById('regenBtn');
+            if (btn) { btn.textContent = '⏳ Generating...'; btn.disabled = true; }
+            showFoodPlanLoading(true);
+            let rendered = false;
+            try {
+                const newPlan = await AI.generateWeeklyFoodPlan(userData, _actualDailyLimit, _remainingBudget, ratingStatus);
+                if (newPlan && newPlan.length > 0) {
+                    aiWeekPlan = newPlan;
+                    renderAIWeekPlan(newPlan);
+                    rendered = true;
+                } else {
+                    showPlanError('Failed to generate plan. Using standard plan.');
+                    renderWeekPlan(currentWeek);
+                }
+            } catch(e) {
+                showPlanError('Connection error. Using standard plan.');
+                renderWeekPlan(currentWeek);
+            } finally {
+                if (!rendered) showFoodPlanLoading(false);
+                if (btn) { btn.textContent = '🔄 Regenerate'; btn.disabled = false; }
+            }
+        }
+
+        function showPlanError(msg) {
+            const container = document.getElementById('weekPlanContainer');
+            container.innerHTML = `
+                <div style="text-align:center;padding:2rem 1rem;">
+                    <div style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️</div>
+                    <div style="font-size:0.9rem;color:var(--warning);font-weight:600;">${msg}</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Try clicking Regenerate again.</div>
+                </div>`;
+        }
+
+        function showFoodPlanLoading(show) {
+            const container = document.getElementById('weekPlanContainer');
+            if (show) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:3rem 1rem;color:var(--text-muted);">
+                        <div style="font-size:1.5rem;margin-bottom:1rem;">🤖</div>
+                        <div style="font-size:0.9rem;font-weight:600;">AI is generating your personalized meal plan...</div>
+                        <div style="font-size:0.8rem;margin-top:0.5rem;opacity:0.6;">Based on your budget status and daily limit</div>
+                    </div>`;
+            }
+        }
+
+        function renderAIWeekPlan(plan) {
+            const tabBar = document.getElementById('weekTabBar');
+            const badge = document.getElementById('aiPlanBadge');
+            if (tabBar) tabBar.style.display = 'none';
+            if (badge) {
+                badge.style.display = 'inline';
+                const now = new Date();
+                badge.textContent = `AI Generated (${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')})`;
+            }
+
+            const container = document.getElementById('weekPlanContainer');
+            container.innerHTML = '';
+            plan.forEach((day, idx) => {
+                const isWeekend = idx >= 5;
+                const div = document.createElement('div');
+                div.className = 'day-plan';
+                div.innerHTML = `
+                    <div class="day-header" onclick="toggleDay(this)">
+                        <span class="day-name">${day.day}</span>
+                        <span style="font-size:0.72rem;color:var(--primary);margin-right:auto;margin-left:0.75rem;font-weight:700;letter-spacing:0.04em;opacity:0.8;">AI</span>
+                        <span class="day-toggle">▼</span>
+                    </div>
+                    <div class="day-body">
+                        <div class="meal-row">
+                            <span class="meal-label">Breakfast</span>
+                            <span class="meal-desc">${day.breakfast}</span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Lunch</span>
+                            <span class="meal-desc">${day.lunch}</span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Dinner</span>
+                            <span class="meal-desc">${day.dinner}</span>
+                        </div>
+                        ${day.tip ? `<div style="margin-top:0.75rem;padding:0.6rem 0.8rem;background:rgba(139,92,246,0.06);border-left:3px solid var(--primary);font-size:0.82rem;color:var(--text-main);">💡 ${day.tip}</div>` : ''}
+                        ${isWeekend ? '<div style="margin-top:0.5rem;"><span class="advice-pill pill-food">Rest Day</span> <span style="font-size:0.8rem;color:var(--text-muted)">Lighter spending day.</span></div>' : ''}
+                    </div>
+                `;
+                if (idx !== 0) {
+                    div.querySelector('.day-body').style.display = 'none';
+                    div.querySelector('.day-toggle').style.transform = 'rotate(-90deg)';
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function renderOpeningMessage(status, dynamic, alloc, actualDailyLimit, remainingBudget) {
+            const el = document.getElementById('advisorOpeningMsg');
+            const dl = actualDailyLimit || dynamic.baseDailyLimit;
+            const rem = Math.round(remainingBudget || 0);
+            const days = dynamic.remainingSchoolDays || 22;
+            const messages = {
+                SAFE: `Your budget is in great shape — ₱${rem.toLocaleString()} remaining with ${days} school days left. That gives you ₱${dl.toLocaleString()} per day. Your AI meal plan includes balanced meals and allows occasional restaurant visits this week. Keep logging expenses to maintain this pace.`,
+                TIGHT: `Budget is getting limited — ₱${rem.toLocaleString()} remaining for ${days} school days (₱${dl.toLocaleString()}/day). Your AI meal plan focuses on karinderya and home-cooked meals this week. Avoid restaurants and minimize transport. Every peso counts.`,
+                SURVIVAL: `Budget is critically low — ₱${rem.toLocaleString()} remaining for ${days} school days (₱${dl.toLocaleString()}/day). Your AI meal plan uses the cheapest options available. Zero non-essential spending. Reach out for support if needed.`
+            };
+            el.textContent = messages[status] || messages.SAFE;
+        }
+
+        function getMealPlanForStatus(dayIndex) {
+            const plans = {
+                SAFE: [
+                    { b: {name:'Boiled egg + rice + fried eggplant', price:'₱20–₱35'}, l: {name:'Karinderya meal', price:'₱60–₱80'}, d: {name:'Repolyo + Giniling Gisa', price:'₱50–₱70', viand:[{item:'Repolyo',cost:'₱20'},{item:'Giniling',cost:'₱25'},{item:'Sibuyas/Bawang',cost:'₱10'}]}, buy:[{item:'Tocino pack',cost:'₱60'},{item:'Itlog (3 pcs)',cost:'₱24'}] },
+                    { b: {name:'Pandesal + coffee', price:'₱15–₱25'}, l: {name:'Canteen meal + soup', price:'₱70–₱90'}, d: {name:'Sinigang na Bangus (home-cooked)', price:'₱60–₱80', viand:[{item:'Bangus (1 pc)',cost:'₱35'},{item:'Kamatis/Sinigang mix',cost:'₱15'},{item:'Kangkong/Gabi',cost:'₱15'}]}, buy:[{item:'Sardinas (2 cans)',cost:'₱50'},{item:'Pandesal (10 pcs)',cost:'₱50'}] },
+                    { b: {name:'Scrambled egg + toast', price:'₱20–₱30'}, l: {name:'Karinderya – adobo set', price:'₱65–₱85'}, d: {name:'Ginisang Gulay + rice', price:'₱35–₱50', viand:[{item:'Sayote',cost:'₱15'},{item:'Carrots',cost:'₱10'},{item:'Bawang/Sibuyas',cost:'₱10'}]}, buy:[{item:'Hotdog pack',cost:'₱55'},{item:'Itlog (2 pcs)',cost:'₱16'}] },
+                    { b: {name:'Oatmeal + banana', price:'₱20–₱30'}, l: {name:'Budget fast food', price:'₱90–₱120'}, d: {name:'Ginisang Sardinas + rice', price:'₱30–₱40', viand:[{item:'Sardinas (can)',cost:'₱22'},{item:'Sibuyas/Kamatis',cost:'₱10'}]}, buy:[{item:'Corned beef (small)',cost:'₱45'},{item:'Rice (1 kg)',cost:'₱50'}] },
+                    { b: {name:'Rice + dried fish (tuyo)', price:'₱15–₱25'}, l: {name:'Karinderya meal', price:'₱60–₱80'}, d: {name:'Nilagang Baka (simple)', price:'₱70–₱90', viand:[{item:'Beef (small cut)',cost:'₱45'},{item:'Potato/Repolyo',cost:'₱20'},{item:'Mais',cost:'₱10'}]}, buy:[{item:'Longganisa pack',cost:'₱55'},{item:'Itlog (3 pcs)',cost:'₱24'}] },
+                    { b: {name:'Pandesal + peanut butter', price:'₱15–₱20'}, l: {name:'Canteen set meal', price:'₱70–₱90'}, d: {name:'Restaurant meal (occasional)', price:'₱120–₱180'}, buy:[{item:'Peanut butter jar',cost:'₱45'},{item:'Pandesal (10 pcs)',cost:'₱50'}] },
+                    { b: {name:'Rest day – light breakfast', price:'₱10–₱20'}, l: {name:'Home-cooked lunch', price:'₱40–₱60'}, d: {name:'Family meal / light meal', price:'₱0–₱50'}, buy:[{item:'Instant noodles (3 pcs)',cost:'₱36'},{item:'Itlog (2 pcs)',cost:'₱16'}] },
+                ],
+                TIGHT: [
+                    { b: {name:'Rice + fried egg', price:'₱12–₱18'}, l: {name:'Karinderya cheapest set', price:'₱45–₱60'}, d: {name:'Ginisang Repolyo + rice', price:'₱25–₱35', viand:[{item:'Repolyo',cost:'₱15'},{item:'Bawang/Sibuyas',cost:'₱8'}]}, buy:[{item:'Itlog (3 pcs)',cost:'₱24'},{item:'Sardinas',cost:'₱25'}] },
+                    { b: {name:'Instant noodles + egg', price:'₱18–₱22'}, l: {name:'Canteen set', price:'₱55–₱70'}, d: {name:'Leftover lunch or boiled egg + rice', price:'₱0–₱15'}, buy:[{item:'Instant noodles (5 pcs)',cost:'₱60'},{item:'Itlog (3 pcs)',cost:'₱24'}] },
+                    { b: {name:'Rice + sardines', price:'₱15–₱22'}, l: {name:'Karinderya rice + ulam', price:'₱45–₱60'}, d: {name:'Ginisang Kamote + rice', price:'₱20–₱30', viand:[{item:'Kamote tops',cost:'₱10'},{item:'Bawang',cost:'₱5'}]}, buy:[{item:'Tuyo (pack)',cost:'₱30'},{item:'Rice (1 kg)',cost:'₱50'}] },
+                    { b: {name:'Boiled egg + pandesal', price:'₱14–₱20'}, l: {name:'Canteen meal', price:'₱50–₱65'}, d: {name:'Boiled egg + rice', price:'₱12–₱15'}, buy:[{item:'Pandesal (10 pcs)',cost:'₱50'},{item:'Itlog (5 pcs)',cost:'₱40'}] },
+                    { b: {name:'Rice + tuyo', price:'₱12–₱18'}, l: {name:'Karinderya cheapest set', price:'₱45–₱55'}, d: {name:'Leftover or monggo', price:'₱15–₱25', viand:[{item:'Monggo (dried)',cost:'₱15'},{item:'Dahon ng ampalaya',cost:'₱5'}]}, buy:[{item:'Monggo (250g)',cost:'₱20'},{item:'Sardinas',cost:'₱25'}] },
+                    { b: {name:'Oatmeal (plain)', price:'₱10–₱15'}, l: {name:'Home-cooked if possible', price:'₱30–₱45'}, d: {name:'Gulay stew + rice', price:'₱20–₱30'}, buy:[{item:'Oatmeal pack',cost:'₱35'},{item:'Sayote (2 pcs)',cost:'₱20'}] },
+                    { b: {name:'Rice + egg', price:'₱12–₱15'}, l: {name:'Simple home meal', price:'₱25–₱40'}, d: {name:'Rice + sardines', price:'₱15–₱22'}, buy:[{item:'Rice (1 kg)',cost:'₱50'},{item:'Sardinas (2 cans)',cost:'₱50'}] },
+                ],
+                SURVIVAL: [
+                    { b: {name:'Rice + egg', price:'₱10–₱15'}, l: {name:'Cheapest karinderya', price:'₱40–₱55'}, d: {name:'Instant noodles + egg', price:'₱18–₱22', viand:[{item:'Noodles',cost:'₱12'},{item:'Itlog (1)',cost:'₱8'}]}, buy:[{item:'Instant noodles (5 pcs)',cost:'₱60'},{item:'Itlog (5 pcs)',cost:'₱40'}] },
+                    { b: {name:'Instant noodles only', price:'₱12'}, l: {name:'Rice + 1 ulam (karinderya)', price:'₱40–₱50'}, d: {name:'Boiled egg + rice', price:'₱10–₱15'}, buy:[{item:'Rice (1 kg)',cost:'₱50'},{item:'Itlog (3 pcs)',cost:'₱24'}] },
+                    { b: {name:'Rice + leftover', price:'₱0–₱10'}, l: {name:'Karinderya cheapest', price:'₱40–₱50'}, d: {name:'Skip or boiled egg', price:'₱0–₱10'}, buy:[{item:'Sardinas',cost:'₱25'},{item:'Pandesal (10 pcs)',cost:'₱50'}] },
+                    { b: {name:'Rice + egg', price:'₱10–₱15'}, l: {name:'Canteen cheapest', price:'₱40–₱55'}, d: {name:'Sardines + rice', price:'₱15–₱22'}, buy:[{item:'Sardinas (2 cans)',cost:'₱50'},{item:'Itlog (3 pcs)',cost:'₱24'}] },
+                    { b: {name:'Pandesal only', price:'₱5–₱10'}, l: {name:'Karinderya (₱40)', price:'₱40'}, d: {name:'Rice + egg', price:'₱10–₱15'}, buy:[{item:'Pandesal (10 pcs)',cost:'₱50'},{item:'Itlog (5 pcs)',cost:'₱40'}] },
+                    { b: {name:'Skip or rice + salt', price:'₱0–₱5'}, l: {name:'Home-cooked or skip', price:'₱0–₱25'}, d: {name:'Noodles + egg', price:'₱18–₱22'}, buy:[{item:'Instant noodles (3 pcs)',cost:'₱36'},{item:'Itlog (2 pcs)',cost:'₱16'}] },
+                    { b: {name:'Rest – light meal', price:'₱0–₱15'}, l: {name:'Family meal or minimal', price:'₱0–₱30'}, d: {name:'Simple rice + ulam', price:'₱15–₱25'}, buy:[{item:'Rice (1 kg)',cost:'₱50'},{item:'Sardinas',cost:'₱25'}] },
+                ],
+            };
+            return plans[ratingStatus][dayIndex % 7];
+        }
+
+        function renderWeekPlan(week) {
+            const container = document.getElementById('weekPlanContainer');
+            const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+            container.innerHTML = '';
+
+            days.forEach((day, idx) => {
+                const m = getMealPlanForStatus((week - 1) * 7 + idx);
+                const isWeekend = idx >= 5;
+
+                let viandHtml = '';
+                if (m.d.viand && m.d.viand.length) {
+                    viandHtml = `<div style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.12);font-size:0.8rem;">
+                        <div style="font-weight:700;color:var(--success);margin-bottom:0.3rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;">🥘 Viand Breakdown: ${m.d.name}</div>
+                        ${m.d.viand.map(v => `<div style="display:flex;justify-content:space-between;padding:0.15rem 0;"><span style="color:var(--text-main);">${v.item}</span><span style="color:var(--text-muted);font-weight:600;">${v.cost}</span></div>`).join('')}
+                        <div style="display:flex;justify-content:space-between;padding-top:0.3rem;border-top:1px solid var(--border-glass);margin-top:0.2rem;font-weight:700;color:var(--success);">
+                            <span>Total</span><span>${m.d.price}</span>
+                        </div>
+                    </div>`;
+                }
+
+                let buyHtml = '';
+                if (m.buy && m.buy.length) {
+                    const buyTotal = m.buy.reduce((s, b) => s + parseInt(b.cost.replace(/[₱,]/g, '')), 0);
+                    buyHtml = `<div style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.12);font-size:0.8rem;">
+                        <div style="font-weight:700;color:var(--primary);margin-bottom:0.3rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;">🛒 Simple Buy Option</div>
+                        ${m.buy.map(b => `<div style="display:flex;justify-content:space-between;padding:0.15rem 0;"><span style="color:var(--text-main);">${b.item}</span><span style="color:var(--text-muted);font-weight:600;">${b.cost}</span></div>`).join('')}
+                        <div style="display:flex;justify-content:space-between;padding-top:0.3rem;border-top:1px solid var(--border-glass);margin-top:0.2rem;font-weight:700;color:var(--primary);">
+                            <span>Total</span><span>₱${buyTotal}</span>
+                        </div>
+                    </div>`;
+                }
+
+                const div = document.createElement('div');
+                div.className = 'day-plan';
+                div.innerHTML = `
+                    <div class="day-header" onclick="toggleDay(this)">
+                        <span class="day-name">${day}</span>
+                        <span class="day-toggle">▼</span>
+                    </div>
+                    <div class="day-body">
+                        <div class="meal-row">
+                            <span class="meal-label">Breakfast</span>
+                            <span class="meal-desc">${m.b.name} <span style="color:var(--accent);font-weight:600;font-size:0.8rem;">${m.b.price}</span></span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Lunch</span>
+                            <span class="meal-desc">${m.l.name} <span style="color:var(--accent);font-weight:600;font-size:0.8rem;">${m.l.price}</span></span>
+                        </div>
+                        <div class="meal-row">
+                            <span class="meal-label">Dinner</span>
+                            <span class="meal-desc">${m.d.name} <span style="color:var(--accent);font-weight:600;font-size:0.8rem;">${m.d.price}</span></span>
+                        </div>
+                        ${viandHtml}
+                        ${buyHtml}
+                        ${isWeekend ? '<div style="margin-top:0.5rem;"><span class="advice-pill pill-food">Rest Day</span> <span style="font-size:0.8rem;color:var(--text-muted)">Lighter spending day — use savings wisely.</span></div>' : ''}
+                    </div>
+                `;
+                if (idx !== 0) {
+                    div.querySelector('.day-body').style.display = 'none';
+                    div.querySelector('.day-toggle').style.transform = 'rotate(-90deg)';
+                }
+                container.appendChild(div);
+            });
+        }
+
+        function toggleDay(header) {
+            const body = header.nextElementSibling;
+            const arrow = header.querySelector('.day-toggle');
+            const isOpen = body.style.display !== 'none';
+            body.style.display = isOpen ? 'none' : 'block';
+            arrow.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+        }
+
+        function renderHabitAdvice() {
+            const container = document.getElementById('habitAdviceList');
+            const habitTips = {
+                SAFE: [
+                    { type: 'food', text: 'Bring a water bottle daily — avoid buying drinks to save ₱20–₱50 per day.' },
+                    { type: 'money', text: 'Set a daily spending limit and track every purchase, even small ones.' },
+                    { type: 'food', text: 'Reduce snack frequency to 1x per day max — small savings compound fast.' },
+                    { type: 'money', text: 'You can allow 1 restaurant meal per week while staying within safe limits.' },
+                ],
+                TIGHT: [
+                    { type: 'warning', text: 'Avoid fast food and restaurants this week — karinderya only.' },
+                    { type: 'food', text: 'Bring water from home. No buying drinks outside whatsoever.' },
+                    { type: 'money', text: 'No impulse purchases. Only buy what you planned for.' },
+                    { type: 'warning', text: 'Delay non-essential purchases (toiletries, etc.) until next allowance.' },
+                ],
+                SURVIVAL: [
+                    { type: 'warning', text: 'Zero non-essential spending. No snacks, no drinks, no extra purchases.' },
+                    { type: 'warning', text: 'Notify family or a trusted person about your budget situation.' },
+                    { type: 'food', text: 'Eat at home or cook whenever possible — it is significantly cheaper.' },
+                    { type: 'money', text: 'Check for any income sources: return bottles, sell unused items, do errands.' },
+                ],
+            };
+
+            const tips = habitTips[ratingStatus] || habitTips.SAFE;
+            container.innerHTML = '';
+            tips.forEach(tip => {
+                const div = document.createElement('div');
+                div.className = `advice-block ${tip.type === 'warning' ? 'behavior' : tip.type === 'money' ? 'money' : 'food'}`;
+                div.textContent = tip.text;
+                container.appendChild(div);
+            });
+        }
+
+        function renderTransportAdvice() {
+            const container = document.getElementById('transportAdviceList');
+            const transports = userData.transports || [];
+            const hasRideHailing = transports.some(t => t.type === 'ridehailing');
+            const hasTricycle = transports.some(t => t.type === 'tricycle');
+
+            const tips = [];
+
+            if (ratingStatus === 'SURVIVAL') {
+                tips.push({ type: 'transport', text: 'Walk whenever the distance allows. Every ₱14 jeepney fare saved matters this week.' });
+                tips.push({ type: 'warning', text: 'Zero ride-hailing this week. No Grab, no Joyride — jeepney or walk only.' });
+            } else if (ratingStatus === 'TIGHT') {
+                tips.push({ type: 'transport', text: 'Minimize tricycle use — take jeepney for longer legs, walk for short routes.' });
+                tips.push({ type: 'transport', text: 'Maintain a consistent route to avoid getting lost and spending more.' });
+                if (hasRideHailing) tips.push({ type: 'warning', text: 'Avoid ride-hailing apps this week — they cost 5–10x more than jeepney.' });
+            } else {
+                if (hasRideHailing) tips.push({ type: 'warning', text: 'Reduce ride-hailing to emergency use. Switching to jeepney saves thousands per month.' });
+                if (hasTricycle) tips.push({ type: 'transport', text: 'Only use tricycle when there is no jeepney available. Prefer walking short distances.' });
+                tips.push({ type: 'transport', text: 'Stick to your regular route — route consistency reduces fare leakage.' });
+                tips.push({ type: 'transport', text: 'If school is within 1–2km, walking 2–3x per week saves ₱300–₱500/month.' });
+            }
+
+            container.innerHTML = '';
+            tips.forEach(tip => {
+                const div = document.createElement('div');
+                div.className = `advice-block ${tip.type === 'warning' ? 'behavior' : 'transport'}`;
+                div.textContent = tip.text;
+                container.appendChild(div);
+            });
+        }
+
+        function renderBudgetStrategy() {
+            const container = document.getElementById('budgetStrategyList');
+            const strategies = {
+                SAFE: [
+                    { type: 'money', text: 'Batch grocery shopping once a week — buying in bulk saves 10–20% vs daily market trips.' },
+                    { type: 'money', text: 'Avoid "small daily leaks" — ₱30 here, ₱50 there adds up to ₱1,500+ per month.' },
+                    { type: 'food', text: 'Snack smartly: buy a bag of biscuits (₱20) instead of daily convenience store trips (₱60).' },
+                    { type: 'money', text: 'Set aside a small daily fund (₱20–₱30) for emergencies and printing needs.' },
+                ],
+                TIGHT: [
+                    { type: 'warning', text: 'Pause all subscriptions you can live without this month.' },
+                    { type: 'money', text: 'No batch buying luxury items — buy only what you need for today and tomorrow.' },
+                    { type: 'money', text: 'Ask classmates to share printing costs, group buys, and materials.' },
+                    { type: 'food', text: 'Buy market vegetables in small quantities — do not overbuy, as they spoil quickly.' },
+                ],
+                SURVIVAL: [
+                    { type: 'warning', text: 'Cancel or pause ALL non-essential subscriptions immediately.' },
+                    { type: 'warning', text: 'Only spend on food and essential transport. Everything else can wait.' },
+                    { type: 'money', text: 'Reach out to scholarship offices or student welfare services for emergency assistance.' },
+                    { type: 'money', text: 'Borrow textbooks or use library resources — avoid any school material purchases this week.' },
+                ],
+            };
+
+            const strats = strategies[ratingStatus] || strategies.SAFE;
+            container.innerHTML = '';
+            strats.forEach(s => {
+                const div = document.createElement('div');
+                div.className = `advice-block ${s.type === 'warning' ? 'behavior' : s.type === 'food' ? 'food' : 'money'}`;
+                div.textContent = s.text;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
